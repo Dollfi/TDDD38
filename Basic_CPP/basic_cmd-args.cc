@@ -7,16 +7,16 @@ using namespace std;
 
 int main(int argc, char * argv[])
 {
-	// Require 2 arguments
-	if ( argc != 3 )
-	{
-		cerr << "Wrong arg count!" << endl;
-	// return something else than 0 if program didn't end successfully
-		return 1; 
-	}
-	for ( int arg {}; arg < argc; ++arg )
-	{
-		cout << argv[arg] << endl;
-	}
-	return 0; 
+    // Require 2 arguments
+    if ( argc != 3 )
+    {
+        cerr << "Wrong arg count!" << endl;
+        // return something else than 0 if program didn't end successfully
+        return 1; 
+    }
+    for ( int arg {}; arg < argc; ++arg )
+    {
+        cout << argv[arg] << endl;
+    }
+    return 0; 
 }

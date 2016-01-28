@@ -1,23 +1,23 @@
 #include <iostream>
 using namespace std;
+
 int main()
 {
-  int x {};
-  int y {3};
-  int z {3.2};  // Narrowing conversion (error §8.5.4/3)
+    int x {};
+    int y {3};
+    int z {3.2}; 
 
-  short a {y}; // Narrowing
-  short b {12}; // Ok?
+    short a {y};
+    short b {12};
 
-  auto d = 4.3;
-  
-  int const *  i_ptr { new int{6} };
-  cout << *i_ptr << endl;  // OK
-  *i_ptr = 5; 		   // ERROR
-  
-  delete i_ptr;
-  i_ptr = new int{5}; 
+    auto d = 4.3;
 
-  // memory leak!
-  return 0;
+    int const *  i_ptr { new int{6} };
+    cout << *i_ptr << endl;
+    *i_ptr = 5; 		
+
+    delete i_ptr;
+    i_ptr = new int{5}; 
+
+    return 0;
 }
