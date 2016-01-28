@@ -1,7 +1,8 @@
 #include <iostream>
 using std::cout;
 
-void fun(float f, int i)
+// can remove argument name to get rid of warnings
+void fun(float, int i)
 {
     cout << "Running float\n";
 }
@@ -14,12 +15,12 @@ void fun(short s, int i)
 {
     cout << "Running short\n";
 }
-void fun(int & const i)
+void fun(int const & i)
 {
     cout << "Running int ref\n";
 }
 
-void fun(int const* const  ip)
+void fun(int const * ip)
 {
     cout << "Running int ptr\n";
 }
