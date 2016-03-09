@@ -10,7 +10,8 @@ void print_common(Args...);
 
 template <typename Container, typename ...Args>
 auto print(Container const & c, Args... tail)
-    -> decltype(begin(c), c.size(), void())
+    -> decltype(begin(c), c.size(), void()) // uses the standard comma-operator 
+                                            // (it's not several arguments to decltype)
 {
 
     auto is_vector =
@@ -25,7 +26,8 @@ auto print(Container const & c, Args... tail)
         std::cout << '{';
     auto sz = c.size()-1;
     auto i = decltype(sz){0};
-    for ( auto const & elem : c )
+    decltype(sz) i{}; 
+   for ( auto const & elem : c )
     {
         print(elem);
         if (i++ < sz)
@@ -69,6 +71,6 @@ auto print( T const & first, Args... tail)
 template <typename ...Args>
 void print_common(Args... args)
 {
-    if (sizeof...(args)) std::cout << ", ";
+    if (sizeof...(args) != 0) std::cout << ", ";
     print(args...);
 }
