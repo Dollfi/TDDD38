@@ -1,0 +1,9 @@
+Running tests with N=1000000Insert random numbers in order. Remove randomly.
+
+vector242.046s
+deque373.184s
+list29979.3s
+Insert random numbers in order with lower_bound. Remove randomly.
+
+vector102.165s
+deque111.727s

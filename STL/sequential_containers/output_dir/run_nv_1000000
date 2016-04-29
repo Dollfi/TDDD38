@@ -1,0 +1,17 @@
+Running tests with N=1000000Insert numbers in beginning, remove from beginning.
+
+deque0.128196s
+list0.316904s
+Insert numbers in beginning, remove from end.
+
+deque0.126095s
+list0.31046s
+Insert numbers at end, remove from end.
+
+vector0.17132s
+deque0.135075s
+list0.310375s
+Insert numbers at end, remove from beginning.
+
+deque0.141455s
+list0.317829s
