@@ -10,3 +10,4 @@ A collection of files created during the STL seminars 2016.
 |sequential_containers| A test of some sequential containers to find out where to use each one, from April 27|
 |zones.cc   | An exam-grade exercise with some trouble at the reading step from lecture May 25|
 |TRIPS.TXT  | Input file for zones.cc |
+|tuple      | Some in-depth usage of ```std::tuple```. Uses templates alot and shows some nice template tricks. |
