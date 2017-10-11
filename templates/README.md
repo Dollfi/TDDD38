@@ -9,6 +9,7 @@ A collection of template usage.
 |```concat.cc```| String concatination. Shows different ways of removing functions from overload resolution|
 |```clone.cc```| How to check for a member function with a specific signature|
 |```clone-concepts.cc```|Check for member function with concepts|
+|```fibonacci.cc```| Uses templates to calculate the ```N```th fibonacci number (also constexpr) |
 | ```policy_simple.cc``` | A basic example on policies |
 | ```policy_state.cc```  | The last example but with a policy that can have a state |
 | ```policy_variadic.cc```| Passing (possbly different) arguments to the policy |
