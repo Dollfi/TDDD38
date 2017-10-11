@@ -14,3 +14,5 @@ A collection of template usage.
 | ```policy_variadic.cc```| Passing (possbly different) arguments to the policy |
 | ```policy_alterntive.cc```| A solution with inheritance instead of policies |
 |```tag_dispatch.cc```| A short example on tag dispatching to find the correct overload|
+|```Array.{h,tcc}```| A simplification of std::array, a wrapper for a c array. Uses lots of intresting template techiques |
+|```array.cc``` | Program using the Array class |
