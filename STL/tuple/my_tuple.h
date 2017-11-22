@@ -18,12 +18,17 @@ namespace My_Tuple
     template<size_t idx, typename Head>
     struct TupleBase
     {
-        constexpr TupleBase(Head const &d) noexcept(std::is_nothrow_copy_constructible<Head>::value)
+        constexpr TupleBase(Head const &d)
                 : data{d}
         {
         }
 
         constexpr TupleBase() = default;
+
+        static Head &&_head(TupleBase &&t)
+        {
+            return std::move(t.data);
+        }
 
         static Head &_head(TupleBase &t)
         {
@@ -80,7 +85,7 @@ namespace My_Tuple
             return t;
         }
 
-        static constexpr HeadType const &_head(TupleImpl const &t)
+        static constexpr Head const &_head(TupleImpl const &t)
         {
             return HeadType::_head(t);
         }
@@ -119,13 +124,6 @@ namespace My_Tuple
         }
     };
 
-
-    template<>
-    struct tuple<>
-    {
-        tuple() = default;
-    };
-
     template<size_t idx, typename Head, typename ...Tail>
     constexpr Head &
     get_by_index(TupleImpl<idx, Head, Tail...> &ti)
@@ -138,6 +136,34 @@ namespace My_Tuple
     get_by_index(TupleImpl<idx, Head, Tail...> const &ti)
     {
         return TupleImpl<idx, Head, Tail...>::_head(ti);
+    }
+
+    template<size_t idx, typename Head, typename ...Tail>
+    constexpr Head &&
+    get_by_index(TupleImpl<idx, Head, Tail...> &&ti)
+    {
+        return TupleImpl<idx, Head, Tail...>::_head(std::move(ti));
+    }
+
+    template <typename Head, size_t idx, typename ...Tail>
+    constexpr Head &
+    get_by_type(TupleImpl<idx, Head, Tail...> &ti)
+    {
+        return TupleImpl<idx,Head,Tail...>::_head(ti);
+    }
+
+    template <typename Head, size_t idx, typename ...Tail>
+    constexpr Head const &
+    get_by_type(TupleImpl<idx, Head, Tail...> const &ti)
+    {
+        return TupleImpl<idx,Head,Tail...>::_head(ti);
+    }
+
+    template <typename Head, size_t idx, typename ...Tail>
+    constexpr Head &&
+    get_by_type(TupleImpl<idx, Head, Tail...> &&ti)
+    {
+        return TupleImpl<idx,Head,Tail...>::_head(std::move(ti));
     }
 
     template<size_t idx, typename ...Elems>
@@ -158,8 +184,7 @@ namespace My_Tuple
     constexpr std::tuple_element_t<idx, My_Tuple::tuple<Elems...>> &&
     get(tuple<Elems...> &&tp)
     {
-        using ret_type = std::tuple_element_t<idx, My_Tuple::tuple<Elems...>>;
-        return std::forward<ret_type&&>(My_Tuple::get_by_index<idx>(tp));
+        return My_Tuple::get_by_index<idx>(std::move(tp));
     }
 
     template<typename T, typename ...Elems>
@@ -170,17 +195,17 @@ namespace My_Tuple
     }
 
     template<typename T, typename ...Elems>
-    constexpr T &&
-    get(tuple<Elems...> &&t)
-    {
-        return std::forward<T&&>(My_Tuple::get_by_type<T>(t));
-    }
-
-    template<typename T, typename ...Elems>
     constexpr T const &
     get(tuple<Elems...> const &t)
     {
         return My_Tuple::get_by_type<T>(t);
+    }
+
+    template<typename T, typename ...Elems>
+    constexpr T &&
+    get(tuple<Elems...> &&t)
+    {
+        return My_Tuple::get_by_type<T>(std::move(t));
     }
 
    template<typename ...Elements>
@@ -207,7 +232,14 @@ namespace My_Tuple
         tuple(tuple const &) = default;
     };
 
-    template<typename ...E>
+ 
+    template<>
+    struct tuple<>
+    {
+        tuple() = default;
+    };
+
+   template<typename ...E>
     tuple<E &...> tie(E &... es)
     {
         return {es...};
