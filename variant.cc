@@ -58,7 +58,7 @@ struct Vistior
     }
 };
 
-// another funciton object type used by visit
+// another function object type used by visit
 struct Printer
 {
     // default behavior
@@ -72,6 +72,17 @@ struct Printer
     {
         cout << "Double: " << d << endl;
     }
+};
+
+// a generic function object type that inherits from
+// several function objects and lifts their function call
+// operator into its scope
+template <typename ...Functor>
+struct Functor_Joiner: public Functor...
+{
+    Functor_Joiner(Functor && ...fun)
+        : Functor{std::forward<Functor>(fun)}... {}
+    using Functor::operator()...;
 };
 
 int main()
@@ -94,6 +105,13 @@ int main()
         visit(Printer{}, v);
         //visit([](auto const & v){cout << v << endl;},
         //        v);
+        visit(Functor_Joiner{ 
+                [](int i){ cout << "int: " << i;},
+                [](char c){ cout << "char: " << c;},
+                [](double d){ cout << "double: " << d;}
+               }, v);
+        cout << '\n';
+              
     }
 
     vector<variant<A,B,C>> entities { A{}, C{}, A{}, B{} };
