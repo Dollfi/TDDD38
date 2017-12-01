@@ -63,12 +63,12 @@ requires(Container const & a)
 
 // used if the container has a member function sort
 template <typename Container>
-concept ContainerWithMemberSort =
+concept bool ContainerWithMemberSort =
 requires(Container & c)
 {
     { c.sort() };
     { *begin(c) } -> LessThanComparable;
-}
+};
 
 // Three ways of using concepts:
 // 1: add a requires-clause to the template
