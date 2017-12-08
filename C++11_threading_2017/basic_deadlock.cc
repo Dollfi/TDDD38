@@ -5,6 +5,7 @@
 
 using namespace std;
 
+/* LatexBeginDeadlock */
 void deadlock(mutex& x, mutex& y)
 {
   auto id = this_thread::get_id();
@@ -19,7 +20,9 @@ void deadlock(mutex& x, mutex& y)
 
   cout << id << ": Doing stuff requiring both locks" << endl;
 }
+/* LatexEndDeadlock */
 
+/* LatexBeginAvoid */
 void no_deadlock(mutex& x, mutex& y)
 {
   auto id = this_thread::get_id();
@@ -36,7 +39,9 @@ void no_deadlock(mutex& x, mutex& y)
   
   cout << id << ": Doing stuff requiring both locks" << endl;
 }
+/* LatexEndAvoid */
 
+/* LatexBeginMain */
 int main()
 {
   mutex A;
@@ -53,3 +58,4 @@ int main()
   
   return 0;
 }
+/* LatexEndMain */

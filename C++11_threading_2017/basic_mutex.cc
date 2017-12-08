@@ -5,6 +5,7 @@
 
 using namespace std;
 
+/* LatexBeginFunc */
 void receptionist(mutex& cout_mutex)
 {
   cout_mutex.lock();
@@ -16,7 +17,9 @@ void receptionist(mutex& cout_mutex)
   lock_guard<mutex> lock(cout_mutex); // destructor auto unlock
   cout << "R: Please enter, he's expecting you." << endl;
 }
+/* LatexEndFunc */
 
+/* LatexBeginClass */
 class Visitor
 {
 public:
@@ -36,7 +39,9 @@ public:
 private:
   mutex& cout_mutex;
 };
+/* LatexEndClass */
 
+/* LatexBeginMain */
 int main()
 {
   // Note: cout is thread safe on character level
@@ -53,3 +58,4 @@ int main()
   
   return 0;
 }
+/* LatexEndMain */

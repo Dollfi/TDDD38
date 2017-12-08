@@ -5,8 +5,8 @@
 
 using namespace std;
 
-void receptionist(promise<void> say_welcome,
-                  future<string> errand,
+/* LatexBeginR */
+void receptionist(promise<void> say_welcome, future<string> errand,
                   promise<void> reply)
 {
   cout << "R: Welcome, how can I help you?" << endl;
@@ -16,9 +16,10 @@ void receptionist(promise<void> say_welcome,
   cout << "R: Please enter, " << name << " is expecting you." << endl;
   reply.set_value();
 }
+/* LatexEndR */
 
-void visitor(future<void> get_welcome,
-             promise<string> tell_errand,
+/* LatexBeginV */
+void visitor(future<void> get_welcome, promise<string> tell_errand,
              future<void> get_reply)
 {
   string name{"Mr X"};
@@ -28,7 +29,9 @@ void visitor(future<void> get_welcome,
   get_reply.wait();
   cout << "V: Thank you" << endl;
 }
+/* LatexEndV */
 
+/* LatexBeginMain */
 int main()
 {
   promise<void> say_welcome;
@@ -49,6 +52,5 @@ int main()
   v.join();
 
   cout << "Main done" << endl;
-  
-  return 0;
 }
+/* LatexEndMain */
