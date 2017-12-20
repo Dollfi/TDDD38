@@ -1,3 +1,4 @@
+/* LatexBeginSetup */
 #include <iostream>
 #include <vector>
 #include <chrono>
@@ -18,7 +19,9 @@ int main()
       "Lorem ipsum dolor sit amet"
   };
   mutex cout_mutex;
+/* LatexEndSetup */
   
+/* LatexBeginPrinter */
   auto printer = [&](int i)
     {
       string const& str = v.at(i);
@@ -34,7 +37,9 @@ int main()
         cout << endl;
       }
     };
+/* LatexEndPrinter */
 
+/* LatexBeginPool */
   vector<thread> pool;
   for ( unsigned i{}; i < v.size(); ++i )
   {
@@ -49,3 +54,4 @@ int main()
 
   return 0;
 }
+/* LatexEndPool */

@@ -11,10 +11,8 @@ using namespace std::chrono_literals;
 
 mutex cout_mutex;
 
-void worker(mt19937& die,
-            int& done,
-            mutex& m,
-            condition_variable& change)
+/* LatexBeginWorker */
+void worker(mt19937& die, int& done, mutex& m, condition_variable& change)
 {
   uniform_int_distribution<int> roll(1,6);
 
@@ -35,7 +33,9 @@ void worker(mt19937& die,
   --done;
   change.notify_one();
 }
+/* LatexEndWorker */
 
+/* LatexBeginMain */
 int main()
 {
   const int N{10};
@@ -56,7 +56,7 @@ int main()
            ref(base_mutex),
            ref(cond_change)).detach();
   }
-
+/* LatexPauseMain */
   // conditions require a std::unique_lock
   unique_lock<mutex> done_mutex{base_mutex};
   while ( done > 0 )
@@ -75,8 +75,6 @@ int main()
 
   // an option that would achieve the same as the loop above is to
   // keep track of all started threads in a vector and join them
-  
   cout << "Main done" << endl;
-  
-  return 0;
 }
+/* LatexEndMain */
