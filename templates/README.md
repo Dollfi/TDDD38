@@ -6,6 +6,7 @@ A collection of template usage.
 | ```sum.cc```| Shows some simple addition solved with templated functions |
 |```perfect_forwarding.cc```| A simple example on perfect forwarding.|
 |```container.cc```|Prints the content of a container|
+|```log.cc```|Introduction to fold expresions and SFINAE|
 |```concat.cc```| String concatination. Shows different ways of removing functions from overload resolution|
 |```clone.cc```| How to check for a member function with a specific signature|
 |```clone-concepts.cc```|Check for member function with concepts|
