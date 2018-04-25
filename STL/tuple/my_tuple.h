@@ -10,162 +10,131 @@
 
 namespace My_Tuple
 {
-
     template<typename ...Args>
     struct tuple;
 
-
-    template<size_t idx, typename Head>
-    struct TupleBase
+    namespace
     {
-        constexpr TupleBase(Head const &d)
-                : data{d}
+        template<size_t idx, typename Head>
+        struct TupleBase
         {
+            constexpr TupleBase(Head &&d)
+                    : data{std::forward<Head>(d)}
+            {
+            }
+
+            constexpr TupleBase() = default;
+
+            static Head &_head(TupleBase &t)
+            {
+                return t.data;
+            }
+
+            static Head const &_head(TupleBase const &t)
+            {
+                return t.data;
+            }
+
+            Head data;
+        };
+
+        template<size_t idx, typename ...Elems>
+        struct TupleImpl;
+
+        template<size_t TupleIndex, typename Head, typename ...Tail>
+        struct TupleImpl<TupleIndex, Head, Tail...> :
+                public TupleImpl<TupleIndex + 1, Tail...>,
+                public TupleBase<TupleIndex, Head>
+        {
+
+
+            using HeadType = TupleBase<TupleIndex, Head>;
+            using TailType = TupleImpl<TupleIndex + 1, Tail...>;
+
+            constexpr TupleImpl(Head &&h, Tail &&... t)
+                : TailType{std::forward<Tail>(t)...}, HeadType{std::forward<Head>(h)}
+            {
+            }
+
+            TupleImpl(TupleImpl const&) = default;
+            TupleImpl(TupleImpl &&) = default;
+
+            constexpr TupleImpl() : TailType{}, HeadType{}
+            {
+            }
+
+            static constexpr Head &_head(TupleImpl &t)
+            {
+                return HeadType::_head(t);
+            }
+
+            static constexpr TailType &_tail(TupleImpl &t)
+            {
+                return t;
+            }
+
+            static constexpr Head const &_head(TupleImpl const &t)
+            {
+                return HeadType::_head(t);
+            }
+
+            static constexpr TailType const &_tail(TupleImpl const &t)
+            {
+                return t;
+            }
+
+            TupleImpl &operator=(TupleImpl const &t)
+            {
+                _head(*this) = _head(t);
+                _tail(*this) = _tail(t);
+                return *this;
+            }
+
+       };
+
+        template<size_t TupleIndex, typename Head>
+        struct TupleImpl<TupleIndex, Head> : public TupleBase<TupleIndex, Head>
+        {
+            using HeadType = TupleBase<TupleIndex, Head>;
+
+            constexpr TupleImpl(Head &&h) : HeadType{std::forward<Head>(h)}
+            {
+            }
+
+            constexpr TupleImpl() : HeadType{}
+            {
+            }
+        };
+
+        template<size_t idx, typename Head, typename ...Tail>
+        constexpr Head &
+        get_by_index(TupleImpl<idx, Head, Tail...> &ti)
+        {
+
+            return TupleImpl<idx, Head, Tail...>::_head(ti);
         }
 
-        constexpr TupleBase() = default;
-
-        static Head &&_head(TupleBase &&t)
+        template<size_t idx, typename Head, typename ...Tail>
+        constexpr Head const &
+        get_by_index(TupleImpl<idx, Head, Tail...> const &ti)
         {
-            return std::move(t.data);
+            return TupleImpl<idx, Head, Tail...>::_head(ti);
         }
 
-        static Head &_head(TupleBase &t)
+        template <typename Head, size_t idx, typename ...Tail>
+        constexpr Head &
+        get_by_type(TupleImpl<idx, Head, Tail...> &ti)
         {
-            return t.data;
+            return TupleImpl<idx,Head,Tail...>::_head(ti);
         }
 
-        static Head const &_head(TupleBase const &t)
+        template <typename Head, size_t idx, typename ...Tail>
+        constexpr Head const &
+        get_by_type(TupleImpl<idx, Head, Tail...> const &ti)
         {
-            return t.data;
+            return TupleImpl<idx,Head,Tail...>::_head(ti);
         }
-
-        Head data;
-    };
-
-    template<size_t idx, typename ...Elems>
-    struct TupleImpl;
-
-    template<size_t TupleIndex, typename Head, typename ...Tail>
-    struct TupleImpl<TupleIndex, Head, Tail...> :
-            public TupleImpl<TupleIndex + 1, Tail...>,
-            public TupleBase<TupleIndex, Head>
-    {
-
-
-        using HeadType = TupleBase<TupleIndex, Head>;
-        using TailType = TupleImpl<TupleIndex + 1, Tail...>;
-
-        constexpr TupleImpl(HeadType const &h, const Tail &... t) 
-            : TailType{t...}, HeadType{h}
-        {
-        }
-
-        constexpr TupleImpl() : TailType{}, HeadType{}
-        {
-        }
-
-        static constexpr Head &_head(TupleImpl &t)
-        {
-            return HeadType::_head(t);
-        }
-
-        static constexpr TailType &_tail(TupleImpl &t)
-        {
-            return t;
-        }
-
-        static constexpr Head &&_head(TupleImpl &&t)
-        {
-            return HeadType::_head(std::move(t));
-        }
-
-        static constexpr TailType _tail(TupleImpl &&t)
-        {
-            return t;
-        }
-
-        static constexpr Head const &_head(TupleImpl const &t)
-        {
-            return HeadType::_head(t);
-        }
-
-        static constexpr TailType const &_tail(TupleImpl const &t)
-        {
-            return t;
-        }
-
-        TupleImpl &operator=(TupleImpl const &t)
-        {
-            _head(*this) = _head(t);
-            _tail(*this) = _tail(t);
-            return *this;
-        }
-
-        TupleImpl &operator=(TupleImpl &&t)
-        {
-            _head(*this) = std::move(_head(t));
-            _tail(*this) = std::move(_tail(t));
-            return *this;
-        }
-    };
-
-    template<size_t TupleIndex, typename Head>
-    struct TupleImpl<TupleIndex, Head> : public TupleBase<TupleIndex, Head>
-    {
-        using HeadType = TupleBase<TupleIndex, Head>;
-
-        constexpr TupleImpl(Head const &h) : HeadType{h}
-        {
-        }
-
-        constexpr TupleImpl() : HeadType{}
-        {
-        }
-    };
-
-    template<size_t idx, typename Head, typename ...Tail>
-    constexpr Head &
-    get_by_index(TupleImpl<idx, Head, Tail...> &ti)
-    {
-        return TupleImpl<idx, Head, Tail...>::_head(ti);
     }
-
-    template<size_t idx, typename Head, typename ...Tail>
-    constexpr Head const &
-    get_by_index(TupleImpl<idx, Head, Tail...> const &ti)
-    {
-        return TupleImpl<idx, Head, Tail...>::_head(ti);
-    }
-
-    template<size_t idx, typename Head, typename ...Tail>
-    constexpr Head &&
-    get_by_index(TupleImpl<idx, Head, Tail...> &&ti)
-    {
-        return TupleImpl<idx, Head, Tail...>::_head(std::move(ti));
-    }
-
-    template <typename Head, size_t idx, typename ...Tail>
-    constexpr Head &
-    get_by_type(TupleImpl<idx, Head, Tail...> &ti)
-    {
-        return TupleImpl<idx,Head,Tail...>::_head(ti);
-    }
-
-    template <typename Head, size_t idx, typename ...Tail>
-    constexpr Head const &
-    get_by_type(TupleImpl<idx, Head, Tail...> const &ti)
-    {
-        return TupleImpl<idx,Head,Tail...>::_head(ti);
-    }
-
-    template <typename Head, size_t idx, typename ...Tail>
-    constexpr Head &&
-    get_by_type(TupleImpl<idx, Head, Tail...> &&ti)
-    {
-        return TupleImpl<idx,Head,Tail...>::_head(std::move(ti));
-    }
-
     template<size_t idx, typename ...Elems>
     constexpr std::tuple_element_t<idx, My_Tuple::tuple<Elems...>> &
     get(tuple<Elems...> &tp)
@@ -178,13 +147,6 @@ namespace My_Tuple
     get(tuple<Elems...> const &tp)
     {
         return My_Tuple::get_by_index<idx>(tp);
-    }
-
-    template<size_t idx, typename ...Elems>
-    constexpr std::tuple_element_t<idx, My_Tuple::tuple<Elems...>> &&
-    get(tuple<Elems...> &&tp)
-    {
-        return My_Tuple::get_by_index<idx>(std::move(tp));
     }
 
     template<typename T, typename ...Elems>
@@ -201,38 +163,19 @@ namespace My_Tuple
         return My_Tuple::get_by_type<T>(t);
     }
 
-    template<typename T, typename ...Elems>
-    constexpr T &&
-    get(tuple<Elems...> &&t)
-    {
-        return My_Tuple::get_by_type<T>(std::move(t));
-    }
-
    template<typename ...Elements>
     struct tuple : TupleImpl<0, Elements...>
     {
         using impl = TupleImpl<0, Elements...>;
 
-        tuple(Elements const &...e) : impl(e...)
+        tuple() = default;
+
+        tuple(Elements &&...e) : impl(std::forward<Elements>(e)...)
         {
         }
 
-        tuple &operator=(tuple const &t)
-        {
-            static_cast<impl &>(*this) = t;
-            return *this;
-        }
-
-        tuple &operator=(tuple &&r)
-        {
-            static_cast<impl &>(*this) = std::move(r);
-            return *this;
-        }
-
-        tuple(tuple const &) = default;
     };
 
- 
     template<>
     struct tuple<>
     {
@@ -254,7 +197,7 @@ namespace std
         : public std::integral_constant<size_t, sizeof...(Elems)>
     {
     };
-    
+
     // tuple_element is a recursive definition with a specialization
     // for index 0 which is the one used.
     template<size_t idx, typename Head, typename ...Tail>
