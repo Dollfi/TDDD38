@@ -18,17 +18,12 @@ int main()
               {
                 return (card-1) % 13 + 1;
               });
-    transform(begin(card_values), end(card_values), begin(card_values), 
-            [](int card){
-             if ( card > 10 )
-             {
-                return 10;
-             }
-             return card;});
+   replace_if(begin(card_values), end(card_values),
+              [](int c){return c>10;},
+              10);
     vector<int> sums (v.size());
     partial_sum(begin(card_values), end(card_values), begin(sums));
     auto it = lower_bound(begin(sums), end(sums), 17);
-    // auto it = find_if(begin(sums), end(sums), [](int v){return v > 16;});
     auto N { it - begin(sums) };
-    copy(begin(v), begin(v)+N+1, ostream_iterator<int>{cout, " "});
+    copy_n(begin(v), N+1, ostream_iterator<int>{cout, " "});
 }
